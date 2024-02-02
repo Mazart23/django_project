@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <h1>Home template</h1>
+
+    <div>
+        <div>
+            {% for act in activities %}
+                <h3>Activity {{ act.host_id }}:</h3>
+                <h4>{{act.activity_id}} -- <a href="{% url 'activity' act.activity_id %}">{{act.name}}</a></h4>
+            {% endfor %}
+        </div>
+
+    </div>
+
+{% endblock %}
+

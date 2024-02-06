@@ -14,8 +14,8 @@ class Type(models.Model):
 
 class Activity(models.Model):
     activity_id = models.AutoField(primary_key=True)
-    type_id = models.ForeignKey(Type, on_delete=models.CASCADE)
-    host_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    type = models.ForeignKey(Type, on_delete=models.CASCADE)
+    host = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     start_time = models.DateTimeField(default=timezone.now, blank=True)
@@ -34,8 +34,8 @@ class Activity(models.Model):
 
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    activity_id = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
     update_dt = models.DateTimeField(auto_now=True)
     create_dt = models.DateTimeField(auto_now_add=True)

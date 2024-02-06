@@ -28,6 +28,9 @@ class Activity(models.Model):
     update_dt = models.DateTimeField(auto_now=True)
     create_dt = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['start_time', 'end_time']
+
     def __str__(self):
         return str(self.name)
 
@@ -39,6 +42,9 @@ class Comment(models.Model):
     description = models.TextField(null=True, blank=True)
     update_dt = models.DateTimeField(auto_now=True)
     create_dt = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['update_dt', 'create_dt']
 
     def __str__(self):
         return str(self.description)

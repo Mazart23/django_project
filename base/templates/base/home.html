@@ -8,7 +8,7 @@
         <a href="{% url 'create-activity' %}">Create activity</a>
         <div>
             {% for act in activities %}
-                <h3>Activity {{ act.host_id }}:</h3>
+                <h3>Activity {{ act.host }}:</h3>
                 <h4>{{act.activity_id}} -- <a href="{% url 'activity' act.activity_id %}">{{act.name}}</a></h4>
             {% endfor %}
         </div>

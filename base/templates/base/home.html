@@ -5,6 +5,7 @@
     <h1>Home template</h1>
 
     <div>
+        <a href="{% url 'create-activity' %}">Create activity</a>
         <div>
             {% for act in activities %}
                 <h3>Activity {{ act.host_id }}:</h3>

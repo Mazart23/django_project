@@ -5,6 +5,7 @@
     <h1>{{activity.name}}</h1>
     <h2>Host: {{activity.host}}</h2>
     <h3>Time: {{activity.start_time}} - {{activity.end_time}}</h3>
+    <a href="{% url 'edit-activity' activity.activity_id %}"><h5>Edit</h5></a>
     <a href="/"><h5>Return</h5></a>
     <hr>
 

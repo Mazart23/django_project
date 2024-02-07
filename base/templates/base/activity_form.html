@@ -7,7 +7,10 @@
         {% csrf_token %}
         {{ act_form }}
         <input type="submit" value="Submit" />
-        
+        {% if sender == 'edit_activity' %}
+            <a href={% url 'delete-activity' activity.activity_id %}>Delete</a>
+        {% endif %}
+
     </form>
 </div>
 

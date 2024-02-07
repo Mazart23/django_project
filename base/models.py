@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 
+
 class Type(models.Model):
     type_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
@@ -18,12 +19,12 @@ class Activity(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
-    start_time = models.DateTimeField(default=timezone.now, blank=True)
+    start_time = models.DateTimeField(default=timezone.now)
 
     def default_end_time():
         return timezone.now() + timedelta(hours=1)
 
-    end_time = models.DateTimeField(default=default_end_time, blank=True)
+    end_time = models.DateTimeField(default=default_end_time)
     is_shared = models.BooleanField(default=False)
     update_dt = models.DateTimeField(auto_now=True)
     create_dt = models.DateTimeField(auto_now_add=True)

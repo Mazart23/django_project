@@ -1,20 +1,30 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib import messages
-from .models import Type, Activity, Comment
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+from .models import Type, Activity, Comment
 from .forms import ActivityForm
 
 
 def login_view(request):
-    context = {}
+
+    page = 'login'
+
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    context = {'page': page}
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('password')
         try:
             User.objects.get(username=username)
         except:
-            messages.error(request, "Invalid username or password")
+            messages.error(request, "Invalid username")
+            return render(request, 'base/login_register.html', context)
 
         user = authenticate(request, username=username, password=password)
 
@@ -24,6 +34,24 @@ def login_view(request):
         else:
             messages.error(request, "Invalid username or password")
 
+    return render(request, 'base/login_register.html', context)
+
+def register_view(request):
+    page = 'register'
+    form = UserCreationForm()
+    context = {'page': page, 'form': form}
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid registration data')
     return render(request, 'base/login_register.html', context)
 
 def logout_view(request):
@@ -40,6 +68,7 @@ def activity(request, pk):
     context = {'activity': activity}
     return render(request, 'base/activity.html', context)
 
+@login_required(login_url='login')
 def create_activity(request):
     context = {'sender': 'create_activity', 'act_form': ActivityForm()}
 
@@ -51,9 +80,14 @@ def create_activity(request):
 
     return render(request, 'base/activity_form.html', context)
 
+@login_required(login_url='login')
 def edit_activity(request, pk):
     activity = Activity.objects.get(activity_id=pk)
     form = ActivityForm(instance=activity)
+
+    if request.user != activity.host:
+        return HttpResponse("Permission denied")
+
     context = {'sender': 'edit_activity', 'activity': activity, 'act_form': form}
 
     if request.method == 'POST':
@@ -64,8 +98,12 @@ def edit_activity(request, pk):
 
     return render(request, 'base/activity_form.html', context)
 
+@login_required(login_url='login')
 def delete_activity(request, pk):
     activity = Activity.objects.get(activity_id=pk)
+
+    if request.user != activity.host:
+        return HttpResponse("Permission denied")
 
     context = {'type': 'activity', 'obj': activity}
 

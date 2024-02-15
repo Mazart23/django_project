@@ -18,6 +18,7 @@ class Activity(models.Model):
     type = models.ForeignKey(Type, on_delete=models.CASCADE)
     host = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
+    participant = models.ManyToManyField(User, related_name='participants', blank=True)
     description = models.TextField(null=True, blank=True)
     start_time = models.DateTimeField(default=timezone.now)
 
@@ -45,7 +46,7 @@ class Comment(models.Model):
     create_dt = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['update_dt', 'create_dt']
+        ordering = ['create_dt', 'update_dt']
 
     def __str__(self):
         return str(self.description)

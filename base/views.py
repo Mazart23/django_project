@@ -65,7 +65,18 @@ def home(request):  # request is HTTP object
 
 def activity(request, pk):
     activity = Activity.objects.get(activity_id=pk)
-    context = {'activity': activity}
+    comments = Comment.objects.filter(activity=activity)
+    participants = activity.participant.all()
+
+    if request.method == 'POST':
+        Comment.objects.create(
+            user=request.user,
+            activity=activity,
+            description=request.POST.get('note')
+        )
+        return redirect('activity', pk)
+
+    context = {'activity': activity, 'comments': comments, 'participants': participants}
     return render(request, 'base/activity.html', context)
 
 @login_required(login_url='login')
@@ -74,8 +85,10 @@ def create_activity(request):
 
     if request.method == 'POST':
         act_form = ActivityForm(request.POST)
+
         if act_form.is_valid():
-            act_form.save()
+            activity = act_form.save()
+            activity.participant.add(request.user)
             return redirect('home')
 
     return render(request, 'base/activity_form.html', context)

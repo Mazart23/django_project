@@ -26,7 +26,7 @@
         <h1>{{activity.name}}</h1>
         <h2>Host: {{activity.host}}</h2>
         <h3>Time: {{activity.start_time}} - {{activity.end_time}}</h3>
-        {% if request.user != activity.host %}
+        {% if request.user == activity.host %}
         <a href="{% url 'edit-activity' activity.activity_id %}"><h5>Edit</h5></a>
         {% endif %}
         <a href="/"><h5>Return</h5></a>
@@ -35,6 +35,9 @@
             <h2>Notes</h2>
             {% for comment in comments %}
             <small>{{ comment.user }} {{ comment.create_dt|timesince}} ago</small>
+            {% if request.user == comment.user %}
+            <a href="{% url 'delete-comment' comment.comment_id %}">delete</a>
+            {% endif %}
             <p>{{ comment.description }}</p>
             <br>
             {% endfor %}

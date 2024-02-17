@@ -59,7 +59,10 @@ def logout_view(request):
     return redirect('home')
 
 def home(request):  # request is HTTP object
-    activities = Activity.objects.all()
+    if request.user.is_authenticated:
+        activities = Activity.objects.filter(participant=request.user)
+    else:
+        activities = {}
     context = {'activities': activities}
     return render(request, 'base/home.html', context)
 
@@ -123,5 +126,21 @@ def delete_activity(request, pk):
     if request.method == 'POST':
         activity.delete()
         return redirect('home')
+
+    return render(request, 'base/delete.html', context)
+
+@login_required(login_url='login')
+def delete_comment(request, pk):
+    comment = Comment.objects.get(comment_id=pk)
+
+    if request.user != comment.user:
+        return HttpResponse("Permission denied")
+
+    context = {'type': 'comment', 'obj': comment}
+
+    if request.method == 'POST':
+        comment_id = comment.comment_id
+        comment.delete()
+        return redirect('home')#'activity', comment_id)
 
     return render(request, 'base/delete.html', context)

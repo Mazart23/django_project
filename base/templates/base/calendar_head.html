@@ -1,0 +1,37 @@
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var events = [
+            {% for act in activities %}
+                {
+                id: '{{ act.activity_id }}',
+                title: '{{ act.name }}',
+                start: '{{ act.start_time|date:"Y-m-d\TH:i:s" }}',
+                end: '{{ act.end_time|date:"Y-m-d\TH:i:s" }}',
+                {% if request.user == act.host %}
+                    color: 'red'
+                {% endif %}
+                },
+            {% endfor %}
+        ];
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            events: events,
+
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            themeSystem: 'bootstrap',
+            eventClick: function(info) {
+                var event_id = info.event.id;
+                if (event_id) {
+                    window.location.href = '/activity/' + event_id;
+                }
+            }
+        });
+        calendar.render();
+      });
+</script>

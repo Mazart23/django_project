@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+
+{% block head %}
+    
+    {% include 'base/calendar_head.html' %}
+    
+{% endblock head %}
+
+{% block content %}
+    <h2>{{ user.username.capitalize }}</h2>
+    <h5>Description:</h5>
+    
+    <div id='calendar'></div>
+
+{% endblock content %}

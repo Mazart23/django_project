@@ -1,43 +1,10 @@
 {% extends 'main.html' %}
 
 {% block head %}
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var events = [
-                {% for act in activities %}
-                {
-                    id: '{{ act.activity_id }}',
-                    title: '{{ act.name }}',
-                    start: '{{ act.start_time|date:"Y-m-d\TH:i:s" }}',
-                    end: '{{ act.end_time|date:"Y-m-d\TH:i:s" }}'
-                },
-                {% endfor %}
-                ];
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek',
-                events: events,
 
-                headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                themeSystem: 'bootstrap',
-                eventClick: function(info) {
-                    var event_id = info.event.id;
-                    if (event_id) {
-                        window.location.href = '/activity/' + event_id;
-                    }
-                }
-            });
-        calendar.render();
-      });
-</script>
-
+    {% include 'base/calendar_head.html' %}
+    
 {% endblock head %}
-
 
 {% block content %}
 
@@ -45,15 +12,8 @@
 
     <div>
         <a href="{% url 'create-activity' %}">Create activity</a>
+        <br>
         <div id='calendar'></div>
-        <div>
-            {% for act in activities %}
-                <h3>Activity {{ act.host }}:</h3>
-                <h4>{{act.activity_id}} -- <a href="{% url 'activity' act.activity_id %}">{{act.name}}</a></h4>
-            {% endfor %}
-        </div>
-
-
     </div>
 
 {% endblock content %}

@@ -5,7 +5,7 @@
 <style>
     .activity-container{
         display: grid;
-        grid-template-columns: auto auto;
+        grid-template-columns: 4fr 1fr;
     }
 </style>
 
@@ -14,54 +14,50 @@
 
 {% block content %}
     
-<style>
-    .activity-container{
-        display: grid;
-        grid-template-columns: 4fr 1fr;
-    }
-</style>
-    
 <div class="activity-container">
     <div>
-        <h1>{{activity.name}}</h1>
-        <h2>Host: {{activity.host}}</h2>
-        <h3>Time: {{activity.start_time}} - {{activity.end_time}}</h3>
+        <h2>{{activity.name}}</h2>
+        <h4>Host: <a href="{% url 'user-profile' activity.host.username %}">{{activity.host.username}}</a></h4>
+        <h4>Time:</h4>
+        <p>{{activity.start_time}} - {{activity.end_time}}</p>
+        <h4>Description:</h4>
+        <p>{{activity.description}}</p>
         {% if request.user == activity.host %}
-        <a href="{% url 'edit-activity' activity.activity_id %}"><h5>Edit</h5></a>
+            <a href="{% url 'edit-activity' activity.activity_id %}"><h5>Edit</h5></a>
         {% endif %}
-        <a href="/"><h5>Return</h5></a>
+        <a href="{{ request.META.HTTP_REFERER }}"><h5>Return</h5></a>
         <hr>
         <div class="notes-wrapper">
-            <h2>Notes</h2>
+            <h3>Notes</h3>
             {% for comment in comments %}
-            <small>{{ comment.user }} {{ comment.create_dt|timesince}} ago</small>
-            {% if request.user == comment.user %}
-            <a href="{% url 'delete-comment' comment.comment_id %}">delete</a>
-            {% endif %}
-            <p>{{ comment.description }}</p>
-            <br>
+                <small><a href="{% url 'user-profile' comment.user.username %}">{{ comment.user.username }}</a> {{ comment.create_dt|timesince}} ago</small>
+                {% if request.user == comment.user %}
+                    <a href="{% url 'delete-comment' comment.comment_id %}">delete</a>
+                {% endif %}
+                <p>{{ comment.description }}</p>
+                <br>
             {% endfor %}
         </div>
         
         {% if request.user.is_authenticated %}
-        <div class="notes-form">
-            <form method="POST" action="">
-                {% csrf_token %}
-                <input type="text" name="note" placeholder="Type note here..." />
-            </form>
-        </div>
+            <div class="notes-form">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="text" name="note" placeholder="Type note here..." />
+                </form>
+            </div>
         {% endif %}
     </div>
     
     <div>
-        <h2>Participants</h2>
+        <h3>Participants</h3>
         <hr>
-        {% for participant in participants %}
         <ul>
-            <li>{{participant.username}}</li>
+            {% for participant in participants %}
+                <li><a href="{% url 'user-profile' participant.username %}">{{participant.username}}</a></li>
+            {% endfor %}
         </ul>
-        {% endfor %}
     </div>
 </div>
     
-{% endblock %}
+{% endblock content %}

@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from .models import Type, Activity, Comment
+from django.db.models import Q
+from .models import Activity, Comment
 from .forms import ActivityForm
 
 
@@ -90,8 +91,10 @@ def create_activity(request):
         act_form = ActivityForm(request.POST)
 
         if act_form.is_valid():
-            activity = act_form.save()
-            activity.participant.add(request.user)
+            activity = act_form.save(commit=False)
+            activity.host = request.user
+            activity.participant = request.user
+            activity.save()
             return redirect('home')
 
     return render(request, 'base/activity_form.html', context)
@@ -141,6 +144,13 @@ def delete_comment(request, pk):
     if request.method == 'POST':
         comment_id = comment.comment_id
         comment.delete()
-        return redirect('home')#'activity', comment_id)
+        return redirect('activity', comment_id)
 
     return render(request, 'base/delete.html', context)
+
+def user_profile(request, username):
+    user = User.objects.get(username=username)
+    activities = Activity.objects.filter(participant=user)
+    context = {'user': user, 'activities': activities}
+
+    return render(request, 'base/profile.html', context)

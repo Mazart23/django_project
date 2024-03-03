@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from .models import Activity, Comment
-from .forms import ActivityForm
+from .forms import ActivityForm, UserForm
 
 
 def login_view(request):
@@ -154,3 +154,17 @@ def user_profile(request, username):
     context = {'user': user, 'activities': activities}
 
     return render(request, 'base/profile.html', context)
+
+@login_required(login_url='login')
+def edit_user(request, username):
+    user = request.user
+    form = UserForm(instance=user)
+
+    if request.method == 'POST':
+        edit_form = UserForm(request.POST, instance=user)
+        if edit_form.is_valid():
+            edit_form.save()
+            return redirect('user-profile', username)
+
+    context = {'user_form': form}
+    return render(request, 'base/user_form.html', context=context)

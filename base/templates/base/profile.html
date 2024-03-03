@@ -8,6 +8,10 @@
 
 {% block content %}
     <h2>{{ user.username.capitalize }}</h2>
+    <h4>F:{{ user.first_name.capitalize }} L:{{ user.last_name.capitalize }}</h4>
+    {% if request.user == user %}
+        <a href="{% url 'edit-user' user.username %}">Edit profile</a>
+    {% endif %}
     <h5>Description:</h5>
     
     <div id='calendar'></div>

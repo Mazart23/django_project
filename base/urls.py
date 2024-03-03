@@ -12,4 +12,5 @@ urlpatterns = [
     path('activity/<str:pk>/edit/delete/', views.delete_activity, name='delete-activity'),
     path('activity/<str:pk>/delete-comment/', views.delete_comment, name='delete-comment'),
     path('profile/<str:username>/', views.user_profile, name='user-profile'),
+    path('profile/<str:username>/edit-user/', views.edit_user, name='edit-user')
 ]

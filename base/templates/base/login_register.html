@@ -14,33 +14,35 @@
         </div>
 
         {% if page == 'login' %}
-        <div>
-        <form method="POST">
-            {% csrf_token %}
-
-            <label>Username:</label>
-            <input type="text" name="username" placeholder="Enter username"/>
-
-            <label>Password:</label>
-            <input type="password" name="password" placeholder="Enter password"/>
-
-            <input type="submit" value="Login"/>
-
-        </form>
-        <p>If you don't have account:</p>
-        <a href="{% url 'register' %}">Sign up</a>
-        </div>
+            <div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <p>
+                        <label>Username:</label>
+                        <input type="text" name="username" placeholder="Enter username"/>
+                    </p>
+                    <p>
+                        <label>Password:</label>
+                        <input type="password" name="password" placeholder="Enter password"/>
+                    </p>
+                    <input type="submit" value="Login"/>
+                </form>
+                <p>If you don't have account:</p>
+                <a href="{% url 'register' %}">Sign up</a>
+            </div>
         {% elif page == 'register' %}
-        <div>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Register"/>
+            <div>
+            <form method="POST">
+                {% csrf_token %}
+                {% for reg_form in form %}
+                    <p>{{ reg_form.label }}: {{ reg_form }}</p>
+                {% endfor %}
+                <input type="submit" value="Register"/>
 
-        </form>
-        <p>If you have account:</p>
-        <a href="{% url 'login' %}">Login</a>
-        </div>
+            </form>
+            <p>If you have account:</p>
+            <a href="{% url 'login' %}">Login</a>
+            </div>
         {% endif %}
     </div>
 

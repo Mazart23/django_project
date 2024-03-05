@@ -7,7 +7,7 @@
         {% csrf_token %}
         {% for field in user_form %}
             <p>{{ field.label }}</p>
-            {{ field }}
+            {{ field.as_p }}
         {% endfor %}
         <input type="submit" value="Submit" />
 
